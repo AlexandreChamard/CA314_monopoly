@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -f *.class
+rm -f $(find -name '*.class')

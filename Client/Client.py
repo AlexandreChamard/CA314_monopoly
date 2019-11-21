@@ -7,7 +7,7 @@ import sys
 class Client:
   def __init__(self, socket):
     self.socket = socket
-    self.runing = True
+    self.running = True
 
   def recv(self):
     try:
@@ -15,7 +15,7 @@ class Client:
       if line is not None:
         return line.decode('ascii')
     except:
-      if self.runing == True:
+      if self.running == True:
         print('server error')
     return None
 
@@ -27,21 +27,22 @@ class Client:
   def getInput(self):
     try:
       line = self.prompt()
-      while line is not None and self.runing == True:
+      while line is not None and self.running == True:
         self.socket.sendall((line+'\n').encode('utf-8'))
         if line == "end":
           break
         line = self.prompt()
-    except:
-      pass
+    except EOFError: # never call when ctrl+D. bug ?
+      print('EOFException')
+      self.socket.sendall(('end\n').encode('utf-8'))
     finally:
       self.close()
       self.join()
 
   def close(self):
-    if self.runing is True:
+    if self.running is True:
       print('closing socket')
-      self.runing = False
+      self.running = False
       self.socket.close()
 
   def join(self):
@@ -60,7 +61,7 @@ def listenServer(client):
   try:
     line = client.recv()
     while line is not None:
-      if line == 'end connection\n': # API get end of connection
+      if line == 'end connection\n' or line[0:3] == '401': # API get end of connection
         client.close()
         break
       print('\nrecv: "'+line+'"> ',end='')

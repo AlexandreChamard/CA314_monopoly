@@ -6,7 +6,7 @@ import java.net.*;
 
 interface Player {
     void    send(String msg);
-    boolean isRuning();
+    boolean isRunning();
     void    close();
     void    join();
 }
@@ -14,7 +14,7 @@ interface Player {
 class User implements Player, Runnable {
     Socket s;
     TownHall ref;
-    volatile boolean runing = true;
+    volatile boolean running = true;
     PrintWriter writer;
     BufferedReader reader;
     Thread t;
@@ -29,13 +29,13 @@ class User implements Player, Runnable {
         System.out.println("User created");
     }
 
-    public boolean isRuning() {
-        return runing;
+    public boolean isRunning() {
+        return running;
     }
 
     public void close() {
-      runing = false;
-      Master.getInstance().getAPI().closeConnection(this);
+        running = false;
+        Master.getInstance().getAPI().closeConnection(this);
     }
 
     public void join() {
@@ -46,13 +46,13 @@ class User implements Player, Runnable {
     }
 
     public void run() { // thread function
-        System.out.println("Thread is runing...");
+        System.out.println("Thread is running...");
         try {
-            while (runing == true) {
+            while (isRunning()) {
                 String l = reader.readLine();
                 if (l == null) {
                     // possibly error connection or RQ
-                    // System.out.println("unexpected null received. End of Connection");
+                    System.out.println("unexpected null received. End of Connection");
                     break;
                 }
                 if (l.equals("end") == true) {
@@ -66,7 +66,6 @@ class User implements Player, Runnable {
             System.out.println("unexpected error: "+e.getMessage());
         }
         close();
-        System.out.println("End connection.");
     }
 
     public void send(String msg) {

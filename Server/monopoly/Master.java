@@ -3,14 +3,14 @@ package monopoly;
 
 import java.util.ArrayList;
 
-class Master {
+public class Master {
     public static final int     port = 4242;
 
     private static Master       master = null;
     private int                 maxGames;
     private TownHall            townHall;
     private API                 api;
-    private ArrayList<Gameplate>     games;
+    private ArrayList<Gameplate> games;
 
     public static Master getInstance() {
         if (master == null)
@@ -68,6 +68,7 @@ class Master {
     }
 
     public void run() {
+        townHall.start();
     }
 
     public static void main(String[] args) {

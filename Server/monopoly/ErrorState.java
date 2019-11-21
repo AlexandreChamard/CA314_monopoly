@@ -9,6 +9,7 @@ package monopoly;
 
 
 400 - ACCESS_ERROR
+401 - fail to connect to the server
 
 500 - INTERNAL_ERROR
 501 - limit of players is already reached.
@@ -26,4 +27,8 @@ class ErrorState extends Throwable {
     public String  message;
 
     public ErrorState(int _code, String _message) { code = _code; message = _message; }
+
+    String to_string() {
+        return code+"#"+message;
+    }
 }
