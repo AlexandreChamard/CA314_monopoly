@@ -1,49 +1,60 @@
 
-interface API {
-  // input
-  void parse(String msg) throws RuntimeException;
+package monopoly;
 
-  // output
-  void closeConnection();
-  void send(String str);
+import java.lang.Throwable;
+
+class ConnectionException extends Throwable {
+    public Player p;
+    public String message;
+
+    public ConnectionException(Player _p, String _m) { p = _p; message = _m; }
+}
+
+interface API {
+    // input
+    void parse(Player p, String msg) throws ConnectionException;
+
+    // output
+    void closeConnection(Player p);
+    void send(Player p, ErrorState state);
 }
 
 class ServerAPI implements API {
-  private ChatServer server;
+    private Master server;
 
-  public ServerAPI(ChatServer _server) {
-    server = _server;
-  }
-
-  public void parse(Player p, String msg) throws RuntimeException {
-    if (msg.startWith("connection: ")) {
-
-      String s = msg.substr(String("connection: ").size());
-      switch (s) {
-        case "end":
-          p.close();
-          break;
-        default:
-          throw RuntimeException("invalide connection block parse: \"+"+s+"\"");
-      }
-
-    } else if (msg.startWith("msg: ")) { // is message
-
-      String s = msg.substr(String("msg: ").size());
-      System.out.println(s);
-      send(p, "message received.");
-
-    } else {
-      throw RuntimeException("invalide parse");
+    public ServerAPI(Master _server) {
+      server = _server;
     }
-  }
 
-  public void closeConnection(Player p) {
-    p.send("connection: end");
-  }
+    public void parse(Player p, String msg) throws ConnectionException {
+      if (msg.startsWith("connection: ")) {
 
-  public void send(Player p, String str) {
-    p.send(str);
-  }
+          String s = msg.substring("connection: ".length());
+          switch (s) {
+            case "end":
+                p.close();
+                break;
+            default:
+                throw new ConnectionException(p, "invalide connection block parse: \""+s+"\"");
+          }
+
+      } else if (msg.startsWith("msg: ")) { // is message
+
+          String s = msg.substring("msg: ".length());
+          System.out.println(s);
+          send(p, new ErrorState(200, "message received."));
+
+      } else {
+          throw new ConnectionException(p, "invalide parse");
+      }
+    }
+
+    public void closeConnection(Player p) {
+      p.send("connection: end");
+    }
+
+    public void send(Player p, ErrorState state) {
+      p.send(state.code+"#"+state.message);
+    }
 
 }

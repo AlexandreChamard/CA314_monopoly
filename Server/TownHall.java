@@ -1,20 +1,21 @@
 
+package monopoly;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ChatServer {
+public class TownHall {
     private int max_connection;
     private int port;
     private ArrayList<Player> players;
-    public API api;
 
 
-    public ChatServer() {
+    public TownHall() {
         init(4242, 2);
     }
 
-    public ChatServer(int _port, int _max_connection) {
+    public TownHall(int _port, int _max_connection) {
         init(_port, _max_connection);
     }
 
@@ -22,7 +23,6 @@ public class ChatServer {
         port = _port;
         max_connection = _max_connection;
         players = new ArrayList<Player>();
-        api = new ServerAPI(this);
     }
 
     public void start() {
@@ -89,12 +89,6 @@ public class ChatServer {
         }
         while (players.size() > 0)
             players.get(0).join();
-    }
-
-    public static void main(String[] args) {
-        ChatServer cs = new ChatServer();
-
-        cs.start();
     }
 
 }
