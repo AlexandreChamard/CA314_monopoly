@@ -1,3 +1,3 @@
 #!/bin/bash
 
-clear.sh && javac *.java
+./clear.sh && javac *.java
