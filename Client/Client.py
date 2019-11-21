@@ -39,9 +39,10 @@ class Client:
       self.join()
 
   def close(self):
-    print('closing socket')
-    self.runing = False
-    self.socket.close()
+    if self.runing is True:
+      print('closing socket')
+      self.runing = False
+      self.socket.close()
 
   def join(self):
     self.reader.join()
