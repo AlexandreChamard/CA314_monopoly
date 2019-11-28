@@ -2,10 +2,14 @@
 package monopoly;
 
 /**
+100 - INFOS
+
 200 - SUCESS
 
 300 - CLIENT_ERROR
 301 - player already in a game
+302 - player is not in party
+302 - party does not in exist
 
 
 400 - ACCESS_ERROR
@@ -16,6 +20,7 @@ package monopoly;
 502 - limit of games is already reached.
 503 - game already exist
 504 - game full
+505 - game not found
 
 
 
@@ -32,3 +37,19 @@ class ErrorState extends Throwable {
         return code+"#"+message;
     }
 }
+
+
+/**
+>: Client => Server
+<: Client <= Server
+
+> connect to account (name / password??)
+< success #2 (unique_id)
+< failure #4
+
+
+
+
+
+
+ */

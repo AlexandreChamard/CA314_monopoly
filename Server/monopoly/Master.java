@@ -49,22 +49,31 @@ public class Master {
         throw new ErrorState(200, "Game \""+name+"\" created.");
     }
 
-    public Gameplate getCurrentGame(String name) {
+    public Gameplate getCurrentGame(String name) throws ErrorState {
         /** Find a game by its name. */
         for (Gameplate game : games) {
             if (game.getName() == name)
                 return game;
         }
-        return null;
+        throw new ErrorState(303, "game "+name+" not found");
     }
 
-    public Gameplate getCurrentGame(Player p) {
+    public Gameplate getCurrentGame(int id) throws ErrorState {
+        /** Find a game by a player. */
+        for (Gameplate game : games) {
+            if (game.getId() == id)
+                return game;
+        }
+        throw new ErrorState(505, "game "+String.valueOf(id)+" not found");
+    }
+
+    public Gameplate getCurrentGame(Player p) throws ErrorState {
         /** Find a game by a player. */
         for (Gameplate game : games) {
             if (game.isPlayer(p) == true)
                 return game;
         }
-        return null;
+        throw new ErrorState(302, "player is not in party");
     }
 
     public void run() {

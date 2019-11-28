@@ -7,6 +7,7 @@ import java.net.*;
 interface Player {
     void    send(String msg);
     boolean isRunning();
+    void    stopConnection();
     void    close();
     void    join();
 }
@@ -33,8 +34,12 @@ class User implements Player, Runnable {
         return running;
     }
 
-    public void close() {
+    public void stopConnection() {
         running = false;
+    }
+
+    public void close() {
+        stopConnection();
         Master.getInstance().getAPI().closeConnection(this);
     }
 
@@ -55,15 +60,18 @@ class User implements Player, Runnable {
                     System.out.println("unexpected null received. End of Connection");
                     break;
                 }
-                if (l.equals("end") == true) {
-                    break;
-                } else {
-                    System.out.println("receive: "+l);
-                    send("message received.");
-                }
+                Master.getInstance().getAPI().parse(this, l);
+                // if (l.equals("end") == true) {
+                //     break;
+                // } else {
+                //     System.out.println("receive: "+l);
+                //     send("message received.");
+                // }
             }
         } catch (IOException e) {
             System.out.println("unexpected error: "+e.getMessage());
+        } catch (ConnectionException e) {
+            System.out.println(e.message);
         }
         close();
     }

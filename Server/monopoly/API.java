@@ -27,25 +27,30 @@ class ServerAPI implements API {
     }
 
     public void parse(Player p, String msg) throws ConnectionException {
-        if (msg.startsWith("connection: ")) {
+        try {
+            if (msg.startsWith("connection: ")) {
 
-            String s = msg.substring("connection: ".length());
-            switch (s) {
-                case "end":
-                    p.close();
-                    break;
-                default:
-                    throw new ConnectionException(p, "invalide connection block parse: \""+s+"\"");
+                String s = msg.substring("connection: ".length());
+                switch (s) {
+                    case "end":
+                        p.stopConnection();
+                        break;
+                    default:
+                        throw new ConnectionException(p, "invalide connection block parse: \""+s+"\"");
+                }
+
+            } else if (msg.startsWith("msg: ")) { // is message
+
+                String s = msg.substring("msg: ".length());
+                System.out.println(s);
+                send(p, new ErrorState(200, "message received."));
+            } else if (msg.equals("draw")) {
+                drawCard(p);
+            } else {
+                throw new ConnectionException(p, "invalide parse");
             }
-
-        } else if (msg.startsWith("msg: ")) { // is message
-
-            String s = msg.substring("msg: ".length());
-            System.out.println(s);
-            send(p, new ErrorState(200, "message received."));
-
-        } else {
-            throw new ConnectionException(p, "invalide parse");
+        } catch (ErrorState e) {
+            send(p, e);
         }
     }
 
@@ -59,4 +64,17 @@ class ServerAPI implements API {
     public void send(Player p, ErrorState state) {
         p.send(state.to_string());
     }
+
+    public void drawCard(Player p) throws ErrorState {
+        Gameplate g = Master.getInstance().getCurrentGame(p);
+
+        Card c = g.getChanceDeck() .drawCard();
+        try {
+            c.doEffect(p);
+        } catch (ErrorState e) {
+            g.getChanceDeck().addCard(c);
+            throw e;
+        }
+    }
+
 }
