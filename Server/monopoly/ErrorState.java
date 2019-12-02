@@ -36,6 +36,9 @@ class ErrorState extends Throwable {
     String to_string() {
         return code+"#"+message;
     }
+    String to_string(String id) {
+        return code+"@"+id+"#"+message;
+    }
 }
 
 
@@ -48,7 +51,23 @@ class ErrorState extends Throwable {
 < failure #4
 
 
+Client => Server
 
+I Connection (end, get name)
+connection: connect %s%%%s
+connection: end
+
+II get information
+
+III do something (roll dice, exchange, draw card, buy property, un/mortgage property, send msg)
+
+IV manage party (create, destroy, join, invite)
+
+V send an error to the server (debug)
+
+
+
+Client <= Server
 
 
 

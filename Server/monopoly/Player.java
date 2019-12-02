@@ -60,13 +60,8 @@ class User implements Player, Runnable {
                     System.out.println("unexpected null received. End of Connection");
                     break;
                 }
+                // System.out.println(l);
                 Master.getInstance().getAPI().parse(this, l);
-                // if (l.equals("end") == true) {
-                //     break;
-                // } else {
-                //     System.out.println("receive: "+l);
-                //     send("message received.");
-                // }
             }
         } catch (IOException e) {
             System.out.println("unexpected error: "+e.getMessage());

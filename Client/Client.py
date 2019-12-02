@@ -4,9 +4,12 @@ import threading
 import socket
 import sys
 
+from API import API as API
+
 class Client:
   def __init__(self, socket):
     self.socket = socket
+    self.api = API(self)
     self.running = True
 
   def recv(self):
@@ -28,13 +31,14 @@ class Client:
     try:
       line = self.prompt()
       while line is not None and self.running == True:
-        self.socket.sendall((line+'\n').encode('utf-8'))
         if line == "end":
+          self.api.end()
           break
+        self.socket.sendall((line+'\n').encode('utf-8'))
         line = self.prompt()
     except EOFError: # never call when ctrl+D. bug ?
       print('EOFException')
-      self.socket.sendall(('end\n').encode('utf-8'))
+      self.api.end()
     finally:
       self.close()
       self.join()
@@ -61,10 +65,10 @@ def listenServer(client):
   try:
     line = client.recv()
     while line is not None:
-      if line == 'end connection\n' or line[0:3] == '401': # API get end of connection
-        client.close()
+      # print('\nrecv: "'+line+'"> ',end='')
+      client.api.parse(line)
+      if client.running is False:
         break
-      print('\nrecv: "'+line+'"> ',end='')
       line = client.recv()
   finally:
     print('end of connection')

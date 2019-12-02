@@ -27,6 +27,16 @@ class ServerAPI implements API {
     }
 
     public void parse(Player p, String msg) throws ConnectionException {
+        // System.out.println("receive '"+msg+"' from p");
+
+        int idx = msg.indexOf('#');
+        if (idx == -1) {
+            System.out.println("DEBUG from "+p+": "+msg);
+            return;
+        }
+        String id = msg.substring(0, idx);
+        msg = msg.substring(idx+1);
+
         try {
             if (msg.startsWith("connection: ")) {
 
@@ -34,7 +44,7 @@ class ServerAPI implements API {
                 switch (s) {
                     case "end":
                         p.stopConnection();
-                        break;
+                        throw new ErrorState(200, "connection close");
                     default:
                         throw new ConnectionException(p, "invalide connection block parse: \""+s+"\"");
                 }
@@ -43,14 +53,14 @@ class ServerAPI implements API {
 
                 String s = msg.substring("msg: ".length());
                 System.out.println(s);
-                send(p, new ErrorState(200, "message received."));
+                throw new ErrorState(200, "message received.");
             } else if (msg.equals("draw")) {
                 drawCard(p);
             } else {
                 throw new ConnectionException(p, "invalide parse");
             }
         } catch (ErrorState e) {
-            send(p, e);
+            send(p, id, e);
         }
     }
 
@@ -63,6 +73,10 @@ class ServerAPI implements API {
 
     public void send(Player p, ErrorState state) {
         p.send(state.to_string());
+    }
+
+    public void send(Player p, String id, ErrorState state) {
+        p.send(state.to_string(id));
     }
 
     public void drawCard(Player p) throws ErrorState {
