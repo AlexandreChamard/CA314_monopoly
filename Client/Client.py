@@ -34,14 +34,13 @@ class Client:
         if line == "end":
           self.api.end()
           break
-        self.socket.sendall((line+'\n').encode('utf-8'))
+        self.api.sendMsg(line, lambda a, b: True)
         line = self.prompt()
     except EOFError: # never call when ctrl+D. bug ?
       print('EOFException')
       self.api.end()
-    finally:
-      self.close()
-      self.join()
+    self.close()
+    self.join()
 
   def close(self):
     if self.running is True:

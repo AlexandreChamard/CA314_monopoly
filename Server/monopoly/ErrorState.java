@@ -9,7 +9,8 @@ package monopoly;
 300 - CLIENT_ERROR
 301 - player already in a game
 302 - player is not in party
-302 - party does not in exist
+303 - party does not in exist
+304 - bad format
 
 
 400 - ACCESS_ERROR

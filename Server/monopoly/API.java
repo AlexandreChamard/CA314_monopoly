@@ -1,6 +1,8 @@
 
 package monopoly;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.lang.Throwable;
 
 class ConnectionException extends Throwable {
@@ -19,6 +21,12 @@ interface API {
     void send(Player p, ErrorState state);
 }
 
+class ParseInfos {
+    public String code;
+    public String core;
+    public List<String> args = new ArrayList<String>();
+}
+
 class ServerAPI implements API {
     private Master server;
 
@@ -27,41 +35,62 @@ class ServerAPI implements API {
     }
 
     public void parse(Player p, String msg) throws ConnectionException {
-        // System.out.println("receive '"+msg+"' from p");
-
-        int idx = msg.indexOf('#');
-        if (idx == -1) {
-            System.out.println("DEBUG from "+p+": "+msg);
-            return;
-        }
-        String id = msg.substring(0, idx);
-        msg = msg.substring(idx+1);
-
+        System.out.println("receive '"+msg+"' from p");
+        ParseInfos infos = null;
         try {
-            if (msg.startsWith("connection: ")) {
+            infos = parseFormat(msg);
 
-                String s = msg.substring("connection: ".length());
-                switch (s) {
-                    case "end":
-                        p.stopConnection();
-                        throw new ErrorState(200, "connection close");
-                    default:
-                        throw new ConnectionException(p, "invalide connection block parse: \""+s+"\"");
-                }
+            if (infos.code == null) {
+                System.out.println("DEBUG from "+p+": "+msg);
+                return;
+            }
 
-            } else if (msg.startsWith("msg: ")) { // is message
+            System.out.println("code: "+infos.code);
+            System.out.println("core: "+infos.code);
+            System.out.println("args:");
+            for (String arg : infos.args)
+                System.out.println("'"+arg+"'");
 
-                String s = msg.substring("msg: ".length());
-                System.out.println(s);
-                throw new ErrorState(200, "message received.");
+
+            getConnection(p, infos);
+            getDraw(p, infos);
+            getMsg(p, infos);
+
+            if (msg.startsWith("msg: ")) { // is message
             } else if (msg.equals("draw")) {
                 drawCard(p);
             } else {
                 throw new ConnectionException(p, "invalide parse");
             }
         } catch (ErrorState e) {
-            send(p, id, e);
+            if (infos != null)
+                send(p, infos.code, e);
+            else
+                send(p, e);
         }
+    }
+
+    protected ParseInfos parseFormat(String str) throws ErrorState {
+        ParseInfos infos = new ParseInfos();
+
+        int i = str.indexOf(':');
+        if (i == -1)
+            throw new ErrorState(304, "bad format.");
+        infos.core = str.substring(0, i);
+        str = str.substring(i+1);
+
+        i = infos.core.indexOf('#');
+        if (i != -1) {
+            infos.code = infos.core.substring(0, i);
+            infos.core = infos.core.substring(i+1);
+        }
+
+        String[] args = str.split("&");
+        for (String arg : args) {
+            infos.args.add(arg);
+        }
+
+        return infos;
     }
 
     public void closeConnection(Player p) {
@@ -79,10 +108,46 @@ class ServerAPI implements API {
         p.send(state.to_string(id));
     }
 
-    public void drawCard(Player p) throws ErrorState {
+
+    public void getConnection(Player p, ParseInfos infos) throws ErrorState, ConnectionException {
+        if (!infos.core.equals("connection"))
+            return;
+
+        if (infos.args.size() != 1)
+            throw new ErrorState(304, "bad connection format.");
+        switch (infos.args.get(0)) {
+            case "end":
+                p.stopConnection();
+                throw new ErrorState(200, "connection close");
+            default:
+                throw new ConnectionException(p, "bad connection format.");
+        }
+    }
+
+    public void getDraw(Player p, ParseInfos infos) throws ErrorState {
+        if (!infos.core.equals("draw"))
+            return;
+
+        if (infos.args.size() > 0)
+            throw new ErrorState(304, "bad draw format.");
+        drawCard(p); // throws
+    }
+
+    public void getMsg(Player p, ParseInfos infos) throws ErrorState {
+        if (!infos.core.equals("msg"))
+            return;
+
+        String s = String.join("&", infos.args);
+        System.out.println(s);
+        throw new ErrorState(200, "message received.");
+    }
+
+
+
+    private void drawCard(Player p) throws ErrorState { // it's a test function. do not use in the final result
         Gameplate g = Master.getInstance().getCurrentGame(p);
 
-        Card c = g.getChanceDeck() .drawCard();
+        Card c = g.getChanceDeck().drawCard();
         try {
             c.doEffect(p);
         } catch (ErrorState e) {

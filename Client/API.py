@@ -46,7 +46,7 @@ class API:
                 for (c, m) in getMethods:
                     m(code, msg)
             else:
-                print('no callback for code: '+str(code)) # debug. must be removed.
+                print(str(code)+': '+msg,end='') # debug.
 
 # I Connection
 
@@ -56,12 +56,13 @@ class API:
     def end(self): # OUT (no CB)
         i = self.genId()
         self.newCallBack(i, defaultCallBack)
-        self.send(str(i)+'#connection: end')
+        self.send(str(i)+'#connection:end')
         pass
 
 # II get information
 
     def getConnectionFailed(self, code, msg): # GET 401
+        print('get 401')
         self.client.close()
         pass
 
@@ -101,7 +102,7 @@ class API:
     def sendMsg(self, msg, callBack): # OUT
         i = self.genId()
         self.newCallBack(i, defaultCallBack)
-        self.send(str(i)+'#'+msg)
+        self.send(str(i)+'#msg:'+msg)
 
 # IV manage party
 
@@ -119,7 +120,7 @@ class API:
 
 # V Errors
     def debug(self, msg): # OUT (no CB)
-        self.send('debug: '+msg)
+        self.send('debug:'+msg)
         pass
 
 def defaultCallBack(code, msg):
