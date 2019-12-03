@@ -56,17 +56,18 @@ class ServerAPI implements API {
             getDraw(p, infos);
             getMsg(p, infos);
 
-            if (msg.startsWith("msg: ")) { // is message
-            } else if (msg.equals("draw")) {
-                drawCard(p);
-            } else {
-                throw new ConnectionException(p, "invalide parse");
-            }
+            throw new ErrorState(304, "invalid message.");
         } catch (ErrorState e) {
-            if (infos != null)
+            if (infos != null) {
                 send(p, infos.code, e);
-            else
-                send(p, e);
+            } else {
+                String code = tryRetrieveCode(msg);
+                if (code != null)
+                    send(p, code, e);
+                else
+                    send(p, e);
+
+            }
         }
     }
 
@@ -91,6 +92,18 @@ class ServerAPI implements API {
         }
 
         return infos;
+    }
+
+    protected String tryRetrieveCode(String str) {
+        int i = str.indexOf('#');
+        if (i == -1)
+            return null;
+        str = str.substring('#');
+        for (char c : str.toCharArray()) {
+            if (Character.isDigit(c) == false)
+                return null;
+        }
+        return str;
     }
 
     public void closeConnection(Player p) {

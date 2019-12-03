@@ -29,9 +29,18 @@ class API:
 
         if '@' in msg[0]:
             msg_ = msg[0].split('@')
+            if msg_[0].isdigit() is False:
+                print('error: bad code number: '+msg_[0])
+                return
+            if msg_[1].isdigit() is False:
+                print('error: bad id number: '+msg_[1])
+                return
             code = int(msg_[0])
             id = int(msg_[1])
         else:
+            if msg[0].isdigit() is False:
+                print('error: bad code number: '+msg[0])
+                return
             code = int(msg[0])
 
         msg = '#'.join(msg[1:])
@@ -125,4 +134,4 @@ class API:
 
 def defaultCallBack(code, msg):
     if code != 200:
-        print(code+': '+msg)
+        print(str(code)+': '+msg)
