@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import monopoly.Cards.*;
 
-class Deck {
+abstract class Deck {
     private Queue<Card> cards;
 
-    Deck(Card[] _cards) {
-        List<Card> cs = Arrays.asList(_cards);
+    Deck() {
+        List<Card> cs = Arrays.asList(getDeck());
         Collections.shuffle(cs);
         for (Card c : cs) {
             cards.add(c);
@@ -19,6 +19,8 @@ class Deck {
         /** shuffle cards */
         /** improve cards with all of cards. */
     }
+
+    protected abstract Card[] getDeck();
 
     public Card drawCard()
     {
@@ -31,8 +33,22 @@ class Deck {
     }
 }
 
-class ChanceDeck {
+final class ChanceDeck extends Deck {
     public static final Card[] allCards = {
         new TestCard(),
     };
+
+    protected final Card[] getDeck() {
+        return allCards;
+    }
+}
+
+final class CommunityDeck extends Deck {
+    public static final Card[] allCards = {
+        new TestCard(),
+    };
+
+    protected final Card[] getDeck() {
+        return allCards;
+    }
 }

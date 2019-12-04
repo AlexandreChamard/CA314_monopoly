@@ -8,7 +8,7 @@ import java.util.*;
 public class TownHall {
     private int max_connection;
     private int port;
-    private ArrayList<Player> players = null;
+    private Vector<Player> players = null;
 
     public TownHall(int _port, int _max_connection) {
         init(_port, _max_connection);
@@ -18,7 +18,7 @@ public class TownHall {
         port = _port;
         max_connection = _max_connection;
         if (players == null)
-            players = new ArrayList<Player>(max_connection);
+            players = new Vector<Player>(max_connection);
     }
 
     public void start() {
@@ -59,7 +59,7 @@ public class TownHall {
     }
 
     public boolean checkrunning() {
-        ArrayList<Player> toRemove = new ArrayList<Player>();
+        Vector<Player> toRemove = new Vector<Player>();
         for (Player p : players) {
             if (p.isRunning() == false)
                 toRemove.add(p);

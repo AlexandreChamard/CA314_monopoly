@@ -1,6 +1,9 @@
+
+package monopoly;
+
 import java.util.concurrent.TimeUnit;
 
-public class Timer {
+class Timer {
     private long mStart = 0;
     private long mTime = 0;
     private boolean mRunning = false;

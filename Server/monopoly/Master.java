@@ -1,7 +1,7 @@
 
 package monopoly;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class Master {
     public static final int     port = 4242;
@@ -10,7 +10,7 @@ public class Master {
     private int                 maxGames;
     private TownHall            townHall;
     private API                 api;
-    private ArrayList<Gameplate> games;
+    private Vector<Gameplate> games;
 
     public static Master getInstance() {
         if (master == null)
@@ -21,7 +21,7 @@ public class Master {
     private Master() {
         maxGames = 1; // to change. currently just debug 
         townHall = new TownHall(port, 2); // maxPlayers is currently debug. It must be something like (maxGames * 10)
-        games = new ArrayList<Gameplate>(maxGames);
+        games = new Vector<Gameplate>(maxGames);
         api = new ServerAPI(this);
     }
 

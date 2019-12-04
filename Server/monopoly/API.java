@@ -1,8 +1,7 @@
 
 package monopoly;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 import java.lang.Throwable;
 
 class ConnectionException extends Throwable {
@@ -24,7 +23,7 @@ interface API {
 class ParseInfos {
     public String code;
     public String core;
-    public List<String> args = new ArrayList<String>();
+    public Vector<String> args = new Vector<String>();
 }
 
 class ServerAPI implements API {
@@ -160,13 +159,14 @@ class ServerAPI implements API {
     private void drawCard(Player p) throws ErrorState { // it's a test function. do not use in the final result
         Gameplate g = Master.getInstance().getCurrentGame(p);
 
-        Card c = g.getChanceDeck().drawCard();
-        try {
-            c.doEffect(p);
-        } catch (ErrorState e) {
-            g.getChanceDeck().addCard(c);
-            throw e;
-        }
+        throw new ErrorState(304, "do not use it.");
+        // Card c = g.getChanceDeck().drawCard();
+        // try {
+        //     c.doEffect(p);
+        // } catch (ErrorState e) {
+        //     g.getChanceDeck().addCard(c);
+        //     throw e;
+        // }
     }
 
 }
