@@ -91,7 +91,7 @@ class Gameplate implements Runnable {
     public void run() { // main game loop. thread function.
         while (isEnd() == false) {
             Player currentPlayer = players.get(turnsPlayed % players.size());
-            rules.get("playTurn").apply(currentPlayer);
+            rules.get("playTurn").apply(this, currentPlayer);
             ++turnsPlayed;
         }
     }
@@ -132,7 +132,7 @@ class Gameplate implements Runnable {
         initRules();
         timer = new Timer();
         dice = new Dice();
-        bank = new Bank(this);
+        bank = new Bank(this, players);
         promotor = new Promotor(this);
         communityDeck = new CommunityDeck();
         chanceDeck = new ChanceDeck();
