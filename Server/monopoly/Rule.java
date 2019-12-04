@@ -2,5 +2,5 @@
 package monopoly;
 
 interface Rule {
-    public void apply(Player p);
+    public void apply(Gameplate game, Player p);
 }

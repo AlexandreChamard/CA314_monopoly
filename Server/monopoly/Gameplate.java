@@ -5,6 +5,12 @@ import java.util.Map;
 import java.util.Hashtable;
 import java.util.Vector;
 
+class PlayerInfos {
+    public Player p;
+    public int pos = 0;
+    public int remainingJailTurn = 0; // in jail if remainingJailTurn != 0
+}
+
 class Gameplate implements Runnable {
     private static int idIt = 0;
     private int id;
@@ -15,7 +21,8 @@ class Gameplate implements Runnable {
     public static final int go200Bonus = 200;
 
     private static final int    maxPlayers = 4;
-    private Vector<Player>   players;
+    private Vector<Player>           players;
+    private Map<Player, PlayerInfos> infos;
     private String              name;
     public boolean              running = true;
 
@@ -54,8 +61,8 @@ class Gameplate implements Runnable {
     }
 
     public void broadcast(String msg) {
-        for (Player player : players)
-            player.send(msg);
+        for (Player p : players)
+            p.send(msg);
     }
 
     public void addPlayer(Player p) throws ErrorState {
@@ -83,7 +90,7 @@ class Gameplate implements Runnable {
 
     public void run() { // main game loop. thread function.
         while (isEnd() == false) {
-            Player currentPlayer = players.get(turnsPlayed % maxPlayers);
+            Player currentPlayer = players.get(turnsPlayed % players.size());
             rules.get("playTurn").apply(currentPlayer);
             ++turnsPlayed;
         }
@@ -108,6 +115,10 @@ class Gameplate implements Runnable {
         return winner;
     }
 
+    public PlayerInfos getPlayerInfos(Player p) {
+        return infos.get(p);
+    }
+
 
     /** III init */
 
@@ -115,6 +126,9 @@ class Gameplate implements Runnable {
         consecutiveTurns = 0;
         turnsPlayed = 0;
 
+        infos = new Hashtable<Player, PlayerInfos>();
+        for (Player p : players)
+            infos.put(p, new PlayerInfos());
         initRules();
         timer = new Timer();
         dice = new Dice();
