@@ -38,6 +38,21 @@ class Bank implements Player {
         return true;
     }
 
+    public boolean tryTransfert(Player pFrom, Player pTo, int n) {
+        assert n > 0;
+        if (bankrupt(pFrom) == true || bankrupt(pTo) == true)
+            return false;
+
+        Integer pFromA = getAccount(pFrom);
+        Integer pToA = getAccount(pTo);
+
+        if (pFromA.intValue() < n)
+            return false;
+        accounts.put(pFrom, new Integer(pFromA.intValue() - n));
+        accounts.put(pTo, new Integer(pToA.intValue() - n));
+        return true;
+    }
+
     public void setBankrupt(Player p) {
         accounts.put(p, null);
     }
