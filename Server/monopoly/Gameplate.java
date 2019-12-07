@@ -22,7 +22,7 @@ class Gameplate implements Runnable {
 
     private static final int    maxPlayers = 4;
     private Vector<Player>           players;
-    private Map<Player, PlayerInfos> infos;
+    public Map<Player, PlayerInfos> infos;
     private String              name;
     public boolean              running = true;
 
@@ -91,13 +91,48 @@ class Gameplate implements Runnable {
     public void run() { // main game loop. thread function.
         while (isEnd() == false) {
             Player currentPlayer = players.get(turnsPlayed % players.size());
-            rules.get("playTurn").apply(this, currentPlayer);
+            /** @notify all wich player plays */
+            if (canPlay(currentPlayer) == true) {
+                rules.get("turn").apply(this, currentPlayer);
+                /** @notify all turn end */
+            }
             ++turnsPlayed;
         }
     }
 
+    public boolean canPlay(Player p) {
+        return p.isRunning() == true && bank.bankrupt(p) == false;
+    }
+
+    public void advance(Player p, int n) {
+        PlayerInfos info = infos.get(p);
+        int before = info.pos;
+
+        info.pos = computeIdx(info.pos + n);
+        if (info.pos - n != before) {
+            applyRule("slot0", p);
+        }
+    }
+
+    public void moveToPrison(Player p) {
+        PlayerInfos info = infos.get(p);
+        info.pos = 10;
+        info.remainingJailTurn = 3;
+    }
+
     public boolean isEnd() {
         return getWinner() != null || running == false;
+    }
+
+    public void applyRule(String str, Player p) {
+        if (rules.containsKey(str) == true)
+            rules.get(str).apply(this, p);
+        else
+            System.out.println("rule str doesn't not exist.");
+    }
+
+    public void applySlotRule(Player p) {
+        slots[infos.get(p).pos].apply(this, p);
     }
 
     public Player getWinner() {
@@ -119,6 +154,9 @@ class Gameplate implements Runnable {
         return infos.get(p);
     }
 
+    private int computeIdx(int i) {
+        return Math.floorMod(i, 12);
+    }
 
     /** III init */
 
@@ -142,7 +180,9 @@ class Gameplate implements Runnable {
         if (rules != null)
             return;
         rules = new Hashtable<String, Rule>();
-        // rules.put("bla", new BlaRule());
+        rules.put("turn", new TurnRule());
+        rules.put("prison", new PrisonRule());
+        rules.put("slot0", new GoRule());
     }
 
     private void initSlots() {

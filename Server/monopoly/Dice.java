@@ -7,8 +7,11 @@ class Dice
 {
     Random rand = new Random();
 
-    public int rollDice()
+    public int[] roll()
     {
-        return rand.nextInt(6) + 1;
+        int[] dice = new int[2];
+        dice[0] = rand.nextInt(6) + 1;
+        dice[1] = rand.nextInt(6) + 1;
+        return dice;
     }
 }
