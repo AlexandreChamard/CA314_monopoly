@@ -9,7 +9,7 @@ class payFeeCard implements Card {
         this.amount = amount;
     }
 
-    public void doEffect(Player p) {
+    public void doEffect(Gameplate game, Player p) {
         // ps.current().deductMoney(amount);
     }
 }

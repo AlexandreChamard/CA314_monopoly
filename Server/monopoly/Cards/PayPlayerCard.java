@@ -9,7 +9,7 @@ class PayPlayerCard implements Card {
         this.amount = amount;
     }
 
-    public void doEffect(Player p) {
+    public void doEffect(Gameplate game, Player p) {
         // ps.current().addMoney(amount);
     }
 }

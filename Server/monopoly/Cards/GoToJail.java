@@ -7,7 +7,7 @@ class GoToJailCard implements Card {
         // super(destination, text);
     }
 
-    public void doEffect(Player p) {
+    public void doEffect(Gameplate game, Player p) {
         // super.effect(ps, result);
         // p.imprison();
     }

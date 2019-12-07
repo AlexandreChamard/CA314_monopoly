@@ -9,7 +9,7 @@ class GoToLocationCard implements Card {
         this.destination = destination;
     }
 
-    public void doEffect(Player p) {
+    public void doEffect(Gameplate game, Player p) {
         // ps.current().moveTo(destination);
         // ps.current().getSlot().action(ps, result);
     }
