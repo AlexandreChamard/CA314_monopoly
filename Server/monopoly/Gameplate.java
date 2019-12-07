@@ -185,16 +185,16 @@ class Gameplate implements Runnable {
         rules.put("go", new GoRule());
         rules.put("chance", new ChanceDrawRule());
         rules.put("community", new CommunityDrawRule());
-        rules.put("visiting", new CommunityDrawRule());
-        rules.put("free_parking", new CommunityDrawRule());
-        rules.put("go_to_jail", new CommunityDrawRule());
-
+        rules.put("visiting", new VisitJailRule());
+        rules.put("free_parking", new FreeParkingRule());
+        rules.put("income_tax", new IncomeTaxRule());
+        rules.put("super_tax", new SuperTaxRule());
     }
 
     private void initSlots() {
         slots = new Rule[40];
         slots[0] = rules.get("go");   slots[1] = rules.get("slot1");   slots[2] = rules.get("community");
-        slots[3] = rules.get("slot3");   slots[4] = rules.get("slot4");   slots[5] = rules.get("slot5");
+        slots[3] = rules.get("slot3");   slots[4] = rules.get("income_tax");   slots[5] = rules.get("slot5");
         slots[6] = rules.get("slot6");   slots[7] = rules.get("chance");   slots[8] = rules.get("slot8");
         slots[9] = rules.get("slot9");   slots[10] = rules.get("visiting"); slots[11] = rules.get("slot11");
         slots[12] = rules.get("slot12"); slots[13] = rules.get("slot13"); slots[14] = rules.get("slot14");
@@ -205,7 +205,7 @@ class Gameplate implements Runnable {
         slots[27] = rules.get("slot27"); slots[28] = rules.get("slot28"); slots[29] = rules.get("slot29");
         slots[30] = rules.get("go_to_jail"); slots[31] = rules.get("slot31"); slots[32] = rules.get("slot32");
         slots[33] = rules.get("community"); slots[34] = rules.get("slot34"); slots[35] = rules.get("slot35");
-        slots[36] = rules.get("chance"); slots[37] = rules.get("slot37"); slots[38] = rules.get("slot38");
+        slots[36] = rules.get("chance"); slots[37] = rules.get("slot37"); slots[38] = rules.get("super_tax");
         slots[39] = rules.get("slot39");
     }
 
