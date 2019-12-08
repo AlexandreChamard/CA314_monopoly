@@ -58,7 +58,7 @@ Cases = [
     ('Marylebone Station'),
     ('Bow Street', 180, 14, 70, 200, 550, 750, 950, 100),
     ('Community Chest'),
-    ('Marlborough Street', 180, 140, 70, 200, 550, 750, 950, 100),
+    ('Marlborough Street', 180, 14, 70, 200, 550, 750, 950, 100),
     ('Vine Street', 200, 16, 80, 220, 600, 800, 1000, 100),
     ('Free Parking'),
     ('Strand', 220, 18, 90, 250, 700, 875, 1050, 150),

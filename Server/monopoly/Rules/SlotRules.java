@@ -25,3 +25,15 @@ class GoToJailRule implements Rule {
         game.moveToPrison(p);
     }
 }
+
+class PropertySlotRule implements Rule {
+    int n;
+
+    public PropertySlotRule(int _n) {
+        n = _n;
+    }
+
+    public void apply(Gameplate game, Player p) {
+        game.promotor.getProperty(n).apply(game, p);
+    }
+}

@@ -110,7 +110,7 @@ class Gameplate implements Runnable {
 
         info.pos = computeIdx(info.pos + n);
         if (info.pos - n != before) {
-            applyRule("slot0", p);
+            applyRule("go", p);
         }
     }
 
@@ -189,24 +189,35 @@ class Gameplate implements Runnable {
         rules.put("free_parking", new FreeParkingRule());
         rules.put("income_tax", new IncomeTaxRule());
         rules.put("super_tax", new SuperTaxRule());
+        rules.put("property_00", new PropertySlotRule(0));  rules.put("property_01", new PropertySlotRule(1));
+        rules.put("property_10", new PropertySlotRule(2));  rules.put("property_11", new PropertySlotRule(3));  rules.put("property_12", new PropertySlotRule(4));
+        rules.put("property_20", new PropertySlotRule(5));  rules.put("property_21", new PropertySlotRule(6));  rules.put("property_22", new PropertySlotRule(7));
+        rules.put("property_30", new PropertySlotRule(8));  rules.put("property_31", new PropertySlotRule(9));  rules.put("property_32", new PropertySlotRule(10));
+        rules.put("property_40", new PropertySlotRule(11)); rules.put("property_41", new PropertySlotRule(12)); rules.put("property_42", new PropertySlotRule(13));
+        rules.put("property_50", new PropertySlotRule(14)); rules.put("property_51", new PropertySlotRule(15)); rules.put("property_52", new PropertySlotRule(16));
+        rules.put("property_60", new PropertySlotRule(17)); rules.put("property_61", new PropertySlotRule(18)); rules.put("property_62", new PropertySlotRule(19));
+        rules.put("property_70", new PropertySlotRule(20)); rules.put("property_71", new PropertySlotRule(21));
+        rules.put("station_0", new PropertySlotRule(22));   rules.put("station_1", new PropertySlotRule(23));
+        rules.put("station_2", new PropertySlotRule(24));   rules.put("station_3", new PropertySlotRule(25));
+        rules.put("electricity", new PropertySlotRule(26)); rules.put("water", new PropertySlotRule(27));
     }
 
     private void initSlots() {
         slots = new Rule[40];
-        slots[0] = rules.get("go");   slots[1] = rules.get("slot1");   slots[2] = rules.get("community");
-        slots[3] = rules.get("slot3");   slots[4] = rules.get("income_tax");   slots[5] = rules.get("slot5");
-        slots[6] = rules.get("slot6");   slots[7] = rules.get("chance");   slots[8] = rules.get("slot8");
-        slots[9] = rules.get("slot9");   slots[10] = rules.get("visiting"); slots[11] = rules.get("slot11");
-        slots[12] = rules.get("slot12"); slots[13] = rules.get("slot13"); slots[14] = rules.get("slot14");
-        slots[15] = rules.get("slot15"); slots[16] = rules.get("slot16"); slots[17] = rules.get("community");
-        slots[18] = rules.get("slot18"); slots[19] = rules.get("slot19"); slots[20] = rules.get("free_parking");
-        slots[21] = rules.get("slot21"); slots[22] = rules.get("chance"); slots[23] = rules.get("slot23");
-        slots[24] = rules.get("slot24"); slots[25] = rules.get("slot25"); slots[26] = rules.get("slot26");
-        slots[27] = rules.get("slot27"); slots[28] = rules.get("slot28"); slots[29] = rules.get("slot29");
-        slots[30] = rules.get("go_to_jail"); slots[31] = rules.get("slot31"); slots[32] = rules.get("slot32");
-        slots[33] = rules.get("community"); slots[34] = rules.get("slot34"); slots[35] = rules.get("slot35");
-        slots[36] = rules.get("chance"); slots[37] = rules.get("slot37"); slots[38] = rules.get("super_tax");
-        slots[39] = rules.get("slot39");
+        slots[0] = rules.get("go");           slots[1] = rules.get("property_00");  slots[2] = rules.get("community");
+        slots[3] = rules.get("property_01");  slots[4] = rules.get("income_tax");   slots[5] = rules.get("station_0");
+        slots[6] = rules.get("property_10");  slots[7] = rules.get("chance");       slots[8] = rules.get("property_11");
+        slots[9] = rules.get("property_12");  slots[10] = rules.get("visiting");    slots[11] = rules.get("property_20");
+        slots[12] = rules.get("electricity"); slots[13] = rules.get("property_21"); slots[14] = rules.get("property_22");
+        slots[15] = rules.get("station_1");   slots[16] = rules.get("property_30"); slots[17] = rules.get("community");
+        slots[18] = rules.get("property_31"); slots[19] = rules.get("property_32"); slots[20] = rules.get("free_parking");
+        slots[21] = rules.get("property_40"); slots[22] = rules.get("chance");      slots[23] = rules.get("property_41");
+        slots[24] = rules.get("property_42"); slots[25] = rules.get("station_2");   slots[26] = rules.get("property_50");
+        slots[27] = rules.get("property_51"); slots[28] = rules.get("water");       slots[29] = rules.get("property_52");
+        slots[30] = rules.get("go_to_jail");  slots[31] = rules.get("property_60"); slots[32] = rules.get("property_61");
+        slots[33] = rules.get("community");   slots[34] = rules.get("property_62"); slots[35] = rules.get("station_3");
+        slots[36] = rules.get("chance");      slots[37] = rules.get("property_70"); slots[38] = rules.get("super_tax");
+        slots[39] = rules.get("property_71");
     }
 
 }
