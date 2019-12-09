@@ -15,7 +15,8 @@ package monopoly;
 110 - property is mortgaged (property id)
 111 - property is unmortgaged (property id)
 112 - new number of homes in property (property id, actual num homes)
-
+113 - chance card is drawn (card message)
+113 - community card is drawn (card message)
 
 200 - SUCESS
 

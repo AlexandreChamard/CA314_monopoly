@@ -56,9 +56,9 @@ class Property implements IProperty {
         } else if (p == owner && mortgaged == true) {
             if (game.bank.tryTransfert(owner, game.bank, (int)((double)prices[0]*1.1)) == true) { // 10% interest
                 mortgaged = false;
-                // @notify player unmortgaged
+                game.broadcast(new ErrorState(111, game.getPlayerInfos(p).id+","+id));
             } else {
-                // @notify player fail unmortgaged
+                /** @notify player fail unmortgaged */
             }
         } else {
             /** @notify error */

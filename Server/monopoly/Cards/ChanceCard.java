@@ -5,6 +5,8 @@ import java.util.Vector;
 
 abstract class ChanceCard implements Card {
     public void doEffect(Gameplate game, Player p) {
+        /** @notify missing the message of the card */
+        game.broadcast(new ErrorState(113, ""));
         effect(game, p);
         game.chanceDeck.addCard(this);
     }

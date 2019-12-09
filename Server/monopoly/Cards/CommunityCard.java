@@ -5,6 +5,8 @@ import java.util.Vector;
 
 abstract class CommunityCard implements Card {
     public void doEffect(Gameplate game, Player p) {
+        /** @notify missing the message of the card */
+        game.broadcast(new ErrorState(113, ""));
         effect(game, p);
         game.communityDeck.addCard(this);
     }
