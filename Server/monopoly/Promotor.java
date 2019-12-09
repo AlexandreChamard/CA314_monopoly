@@ -74,6 +74,7 @@ class Promotor {
     public void addHomes(int id, Player p, int n) {
         IProperty prop = getProperty(id);
 
+        /** number of homes must be dispatch on all same-colored property  */
         if (prop != null) {
             prop.buyHomes(game, p, n);
         } else {

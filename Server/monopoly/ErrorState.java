@@ -11,6 +11,11 @@ package monopoly;
 106 - is bankrput (player id)
 107 - is in prison (player id)
 108 - is out of prison (player id)
+109 - property new owner (player id, property id)
+110 - property is mortgaged (property id)
+111 - property is unmortgaged (property id)
+112 - new number of homes in property (property id, actual num homes)
+
 
 200 - SUCESS
 

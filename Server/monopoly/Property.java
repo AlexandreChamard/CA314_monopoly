@@ -78,7 +78,14 @@ class Property implements IProperty {
     }
 
     public void setNewOwner(Player p) {
-        owner = p;
+        try {
+            Gameplate game = Master.getInstance().getCurrentGame(p);
+
+            game.broadcast(new ErrorState(109, game.getPlayerInfos(p).id+","+id));
+            owner = p;
+        } catch (ErrorState e) {
+            System.out.println(e.code+":"+e.message);
+        }
     }
 
     public Player getOwner() {
@@ -108,9 +115,9 @@ class Property implements IProperty {
         if (p == owner && mortgaged == false && homes == 0) {
             game.bank.transfert(game.bank, p, prices[0] / 2);
             mortgaged = true;
-            /** @notify player it has mortgaged. */
+            game.broadcast(new ErrorState(110, Integer.toString(id)));
         } else {
-            /** @notify player it failed to mortaged. */
+            System.out.println("game "+game.getId()+" fail to mortgaged "+id);
         }
     }
 
@@ -119,7 +126,7 @@ class Property implements IProperty {
 
         if (p == owner) {
             if (homes + n > 5 || homes + n < 0) {
-                /** @notify internal error */
+                System.out.println("game "+game.getId()+" bad number of homes in "+id);
                 return false;
             }
             boolean ret;
@@ -130,14 +137,13 @@ class Property implements IProperty {
             }
             if (ret == true) {
                 homes += n;
-                /** @notify player that it buy n homes */
+                game.broadcast(new ErrorState(112, id+","+homes));
             } else {
-                /** @notify player that it fail to buy */
-
+                System.out.println("game "+game.getId()+" fail to add "+n+" homes in "+id);
             }
             return ret;
         }
-        /** @notify access error */
+        System.out.println("game "+game.getId()+" access error in Property "+id);
         return false;
     }
 }
