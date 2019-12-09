@@ -84,6 +84,15 @@ class Promotor {
         return null;
     }
 
+    public Vector<IProperty> getProperties(Player p) {
+        Vector<IProperty> propertiesOwned = new Vector<IProperty>();
+        for (IProperty prop : properties) {
+            if (prop.getOwner() == p)
+                propertiesOwned.add(prop);
+        }
+        return propertiesOwned;
+    }
+
     public Vector<IProperty> getColor(PropertyColor c) {
         Vector<IProperty> p = new Vector<IProperty>();
         for (IProperty prop : properties) {

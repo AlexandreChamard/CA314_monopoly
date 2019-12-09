@@ -21,7 +21,7 @@ class Gameplate implements Runnable {
     public static final int go200Bonus = 200;
 
     private static final int    maxPlayers = 4;
-    private Vector<Player>           players;
+    public Vector<Player>           players;
     public Map<Player, PlayerInfos> infos;
     private String              name;
     public boolean              running = true;
@@ -112,12 +112,24 @@ class Gameplate implements Runnable {
         if (info.pos - n != before) {
             applyRule("go", p);
         }
+        /** @notify new player pos */
+    }
+
+    public void setPosition(Player p, int n) {
+        assert n >= 0 && n < slots.length;
+        PlayerInfos info = infos.get(p);
+        
+        if (info.pos > n)
+            applyRule("go", p);
+        info.pos = n;
+        /** @notify new player pos */
     }
 
     public void moveToPrison(Player p) {
         PlayerInfos info = infos.get(p);
         info.pos = 10;
         info.remainingJailTurn = 3;
+        /** @notify new player pos */
     }
 
     public boolean isEnd() {
