@@ -7,8 +7,14 @@ import java.util.Vector;
 
 class PlayerInfos {
     public Player p;
+    public int id;
     public int pos = 0;
     public int remainingJailTurn = 0; // in jail if remainingJailTurn != 0
+
+    public PlayerInfos(Player _p, int _id) {
+        p = _p;
+        id = _id;
+    }
 }
 
 class Gameplate implements Runnable {
@@ -27,8 +33,7 @@ class Gameplate implements Runnable {
     public boolean              running = true;
 
     private Rule[] slots;
-    private byte consecutiveTurns;
-    private int turnsPlayed;
+    private int turnsPlayed = 0;
 
     public Thread t = null;
 
@@ -60,9 +65,9 @@ class Gameplate implements Runnable {
         return players.contains(p);
     }
 
-    public void broadcast(String msg) {
+    public void broadcast(ErrorState state) {
         for (Player p : players)
-            p.send(msg);
+            Master.getInstance().getAPI().send(p, state);
     }
 
     public void addPlayer(Player p) throws ErrorState {
@@ -84,17 +89,18 @@ class Gameplate implements Runnable {
 
         t = new Thread(this);
         t.start();
-        System.out.println("game "+name+" started.");
-        // broadcast game started at all players
     }
 
     public void run() { // main game loop. thread function.
+        System.out.println("game "+name+" started.");
+        broadcast(new ErrorState(101, Integer.toString(players.size())));
+
         while (isEnd() == false) {
             Player currentPlayer = players.get(turnsPlayed % players.size());
-            /** @notify all wich player plays */
             if (canPlay(currentPlayer) == true) {
+                broadcast(new ErrorState(102, Integer.toString(infos.get(currentPlayer).id)));
                 rules.get("turn").apply(this, currentPlayer);
-                /** @notify all turn end */
+                broadcast(new ErrorState(103, ""));
             }
             ++turnsPlayed;
         }
@@ -109,27 +115,29 @@ class Gameplate implements Runnable {
         int before = info.pos;
 
         info.pos = computeIdx(info.pos + n);
+        broadcast(new ErrorState(104, info.id + "," + info.pos));
         if (info.pos - n != before) {
             applyRule("go", p);
         }
-        /** @notify new player pos */
     }
 
     public void setPosition(Player p, int n) {
         assert n >= 0 && n < slots.length;
         PlayerInfos info = infos.get(p);
         
+        broadcast(new ErrorState(104, info.id + "," + n));
         if (info.pos > n)
             applyRule("go", p);
         info.pos = n;
-        /** @notify new player pos */
     }
 
     public void moveToPrison(Player p) {
         PlayerInfos info = infos.get(p);
+
         info.pos = 10;
+        broadcast(new ErrorState(104, info.id + "," + info.pos));
         info.remainingJailTurn = 3;
-        /** @notify new player pos */
+        broadcast(new ErrorState(107, Integer.toString(info.id)));
     }
 
     public boolean isEnd() {
@@ -173,12 +181,10 @@ class Gameplate implements Runnable {
     /** III init */
 
     private void initGamePlate() {
-        consecutiveTurns = 0;
-        turnsPlayed = 0;
-
         infos = new Hashtable<Player, PlayerInfos>();
+        int id = 0;
         for (Player p : players)
-            infos.put(p, new PlayerInfos());
+            infos.put(p, new PlayerInfos(p, id++));
         initRules();
         timer = new Timer();
         dice = new Dice();

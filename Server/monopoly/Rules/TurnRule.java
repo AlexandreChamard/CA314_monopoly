@@ -24,13 +24,13 @@ class PrisonRule implements Rule {
         switch (dice.length) {
             case 0:
                 infos.remainingJailTurn = 0;
-                /** @notify it go out of prison */
+                game.broadcast(new ErrorState(108, Integer.toString(infos.id)));
                 game.applyRule("turn", p);
                 break;
             case 2:
                 if (dice[0] == dice[1]) {
                     infos.remainingJailTurn = 0;
-                    /** @notify it go out of prison */
+                    game.broadcast(new ErrorState(108, Integer.toString(infos.id)));
                 } else {
                     --infos.remainingJailTurn;
                 }

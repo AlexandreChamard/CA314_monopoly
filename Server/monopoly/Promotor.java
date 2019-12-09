@@ -42,19 +42,21 @@ class Promotor {
 
     public void mortgage(int id, Player p) {
         IProperty prop = getProperty(id);
+
         if (prop != null) {
             prop.mortgage(game, p);
         } else {
-            /** @notify internal error */
+            System.out.println("Game "+game.getId()+"property "+id+" not found.");
         }
     }
 
     public void unMortgage(int id, Player p) {
         IProperty prop = getProperty(id);
+
         if (prop != null) {
             prop.apply(game, p);
         } else {
-            /** @notify internal error */
+            System.out.println("Game "+game.getId()+"property "+id+" not found.");
         }
     }
 
@@ -64,6 +66,7 @@ class Promotor {
         if (prop != null) {
             return prop.getPrices();
         } else {
+            System.out.println("Game "+game.getId()+"property "+id+" not found.");
             return null;
         }
     }
@@ -73,6 +76,8 @@ class Promotor {
 
         if (prop != null) {
             prop.buyHomes(game, p, n);
+        } else {
+            System.out.println("Game "+game.getId()+"property "+id+" not found.");
         }
     }
 

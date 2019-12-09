@@ -33,8 +33,16 @@ class Bank implements Player {
                 return false;
             pFromA = getAccount(pFrom);
         }
-        accounts.put(pFrom, new Integer(pFromA.intValue() - n));
-        accounts.put(pTo, new Integer(pToA.intValue() - n));
+
+        int pFromNA = pFromA.intValue() - n;
+        int pToNA = pToA.intValue() - n;
+
+        accounts.put(pFrom, new Integer(pFromNA));
+        accounts.put(pTo, new Integer(pToNA));
+        if (pFrom != this)
+            game.broadcast(new ErrorState(105, game.getPlayerInfos(pFrom)+","+accounts.get(pFromNA)));
+        if (pTo != this)
+            game.broadcast(new ErrorState(105, game.getPlayerInfos(pTo)+","+accounts.get(pToNA)));
         return true;
     }
 
@@ -48,13 +56,22 @@ class Bank implements Player {
 
         if (pFromA.intValue() < n)
             return false;
-        accounts.put(pFrom, new Integer(pFromA.intValue() - n));
-        accounts.put(pTo, new Integer(pToA.intValue() - n));
+
+        int pFromNA = pFromA.intValue() - n;
+        int pToNA = pToA.intValue() - n;
+
+        accounts.put(pFrom, new Integer(pFromNA));
+        accounts.put(pTo, new Integer(pToNA));
+        if (pFrom != this)
+            game.broadcast(new ErrorState(105, game.getPlayerInfos(pFrom).id+","+accounts.get(pFromNA)));
+        if (pTo != this)
+            game.broadcast(new ErrorState(105, game.getPlayerInfos(pTo).id+","+accounts.get(pToNA)));
         return true;
     }
 
     public void setBankrupt(Player p) {
         accounts.put(p, null);
+        game.broadcast(new ErrorState(106, Integer.toString(game.getPlayerInfos(p).id)));
     }
 
     public boolean bankrupt(Player p) {

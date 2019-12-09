@@ -3,6 +3,14 @@ package monopoly;
 
 /**
 100 - INFOS
+101 - game start (number of player)
+102 - new turn (player id)
+103 - end of turn
+104 - player position (player id, position)
+105 - transfert money (player id, amount)
+106 - is bankrput (player id)
+107 - is in prison (player id)
+108 - is out of prison (player id)
 
 200 - SUCESS
 

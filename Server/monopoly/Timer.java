@@ -8,7 +8,6 @@ class Timer {
     private long mTime = 0;
     private boolean mRunning = false;
 
-    @Override
     public String toString() {
         return getElapsedString(TimeUnit.SECONDS);
     }
