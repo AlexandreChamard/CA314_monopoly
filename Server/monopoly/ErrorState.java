@@ -25,10 +25,14 @@ package monopoly;
 302 - player is not in party
 303 - party does not in exist
 304 - bad format
+305 - to few players in party
 
 
 400 - ACCESS_ERROR
 401 - fail to connect to the server
+402 - not developed
+403 - player is not the master
+404 - format not recognised
 
 500 - INTERNAL_ERROR
 501 - limit of players is already reached.
@@ -69,14 +73,21 @@ class ErrorState extends Throwable {
 Client => Server
 
 I Connection (end, get name)
-connection: connect %s%%%s
+connection: connect %s
 connection: end
 
 II get information
 
-III do something (roll dice, exchange, draw card, buy property, un/mortgage property, send msg)
+III do something (roll dice, exchange, buy property, un/mortgage property, send msg)
 
 IV manage party (create, destroy, join, invite)
+
+party: create&%s (party name)
+party: destroy
+party: join&%s (party name)
+party: leave
+party: invite&%s (player name) ??
+party: start
 
 V send an error to the server (debug)
 

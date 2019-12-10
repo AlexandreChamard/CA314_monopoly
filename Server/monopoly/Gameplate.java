@@ -65,14 +65,18 @@ class Gameplate implements Runnable {
         return players.contains(p);
     }
 
+    public boolean isMasterPlayer(Player p) {
+        return players.size() > 0 && players.get(0) == p;
+    }
+
     public void broadcast(ErrorState state) {
         for (Player p : players)
             Master.getInstance().getAPI().send(p, state);
     }
 
     public void addPlayer(Player p) throws ErrorState {
-        if (isPlayer(p)) {
-            throw new ErrorState(301, "The player is already in the game.");
+        if (Master.getInstance().getCurrentGame(p) != null) {
+            throw new ErrorState(301, "The player is already in a game.");
         }
         if (players.size() == maxPlayers) {
             throw new ErrorState(504, "The game you want to join is full.");
@@ -80,11 +84,17 @@ class Gameplate implements Runnable {
         players.add(p);
     }
 
+    public void removePlayer(Player p) throws ErrorState {
+        if (players.contains(p) == false)
+            throw new ErrorState(302, "player is not in party.");
+        players.removeElement(p);
+    }
 
     /** II game loop */
 
-    public void startGame() {
-        assert players.size() > 1;
+    public void startGame() throws ErrorState {
+        if (players.size() < 2)
+            throw new ErrorState(305, "only "+players.size()+" players.");
         initGamePlate();
 
         t = new Thread(this);
@@ -104,6 +114,7 @@ class Gameplate implements Runnable {
             }
             ++turnsPlayed;
         }
+        Master.getInstance().deleteGame(this);
     }
 
     public boolean canPlay(Player p) {

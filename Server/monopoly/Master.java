@@ -49,31 +49,57 @@ public class Master {
         throw new ErrorState(200, "Game \""+name+"\" created.");
     }
 
+    public void deleteGame(String name) throws ErrorState {
+        deleteGame(getCurrentGame(name));
+    }
+
+    public void deleteGame(Gameplate game) {
+        game.running = false;
+    }
+
+    public void updateGames() {
+        for (Gameplate game : games) {
+            if (game.running == false) {
+                if (game.t != null) {
+                    try {
+                        game.t.join();
+                    } catch (InterruptedException e) {
+                        System.out.println(e);
+                    }
+                }
+                games.removeElement(game);
+            }
+        }
+    }
+
     public Gameplate getCurrentGame(String name) throws ErrorState {
         /** Find a game by its name. */
+        updateGames();
         for (Gameplate game : games) {
             if (game.getName() == name)
                 return game;
         }
-        throw new ErrorState(303, "game "+name+" not found");
+        throw new ErrorState(303, "game "+name+" not found.");
     }
 
     public Gameplate getCurrentGame(int id) throws ErrorState {
         /** Find a game by a player. */
+        updateGames();
         for (Gameplate game : games) {
             if (game.getId() == id)
                 return game;
         }
-        throw new ErrorState(505, "game "+String.valueOf(id)+" not found");
+        throw new ErrorState(505, "game "+String.valueOf(id)+" not found.");
     }
 
     public Gameplate getCurrentGame(Player p) throws ErrorState {
         /** Find a game by a player. */
+        updateGames();
         for (Gameplate game : games) {
             if (game.isPlayer(p) == true)
                 return game;
         }
-        throw new ErrorState(302, "player is not in party");
+        throw new ErrorState(302, "player is not in party.");
     }
 
     public void run() {

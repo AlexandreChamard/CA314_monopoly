@@ -4,16 +4,9 @@ package monopoly;
 import java.util.Vector;
 import java.lang.Throwable;
 
-class ConnectionException extends Throwable {
-    public Player p;
-    public String message;
-
-    public ConnectionException(Player _p, String _m) { p = _p; message = _m; }
-}
-
 interface API {
     // input
-    void parse(Player p, String msg) throws ConnectionException;
+    void parse(Player p, String msg);
 
     // output
     void closeConnection(Player p);
@@ -33,7 +26,7 @@ class ServerAPI implements API {
         server = _server;
     }
 
-    public void parse(Player p, String msg) throws ConnectionException {
+    public void parse(Player p, String msg) {
         System.out.println("receive '"+msg+"' from p");
         ParseInfos infos = null;
         try {
@@ -50,9 +43,7 @@ class ServerAPI implements API {
             for (String arg : infos.args)
                 System.out.println("'"+arg+"'");
 
-
             getConnection(p, infos);
-            getDraw(p, infos);
             getMsg(p, infos);
 
             throw new ErrorState(304, "invalid message.");
@@ -121,7 +112,7 @@ class ServerAPI implements API {
     }
 
 
-    public void getConnection(Player p, ParseInfos infos) throws ErrorState, ConnectionException {
+    public void getConnection(Player p, ParseInfos infos) throws ErrorState {
         if (!infos.core.equals("connection"))
             return;
 
@@ -132,17 +123,71 @@ class ServerAPI implements API {
                 p.stopConnection();
                 throw new ErrorState(200, "connection close");
             default:
-                throw new ConnectionException(p, "bad connection format.");
+                throw new ErrorState(404, "bad connection format.");
         }
     }
 
-    public void getDraw(Player p, ParseInfos infos) throws ErrorState {
-        if (!infos.core.equals("draw"))
+    public void getParty(Player p, ParseInfos infos) throws ErrorState {
+        if (!infos.core.equals("party"))
             return;
 
-        if (infos.args.size() > 0)
-            throw new ErrorState(304, "bad draw format.");
-        drawCard(p); // throws
+        if (infos.args.size() == 0)
+            throw new ErrorState(304, "bad party format.");
+        switch (infos.args.get(0)) {
+            case "create": {
+                if (infos.args.size() != 2)
+                    throw new ErrorState(304, "bad party create format.");
+                server.createGame(infos.args.get(1));
+                try {
+                    server.getCurrentGame(infos.args.get(1)).addPlayer(p);
+                } catch (ErrorState e) {
+                    server.deleteGame(infos.args.get(1));
+                    throw e;
+                }
+                throw new ErrorState(200, "game successfuly created.");
+            }
+
+            case "destroy": {
+                if (infos.args.size() != 1)
+                    throw new ErrorState(304, "bad party destroy format.");
+                Gameplate game = server.getCurrentGame(p);
+                if (game.isMasterPlayer(p) == false)
+                    throw new ErrorState(403, "fail to destroy game.");
+                server.deleteGame(game);
+                throw new ErrorState(200, "game successfuly destroyed.");
+            }
+
+            case "join": {
+                if (infos.args.size() != 2)
+                    throw new ErrorState(304, "bad party join format.");
+                server.getCurrentGame(infos.args.get(1)).addPlayer(p);
+                throw new ErrorState(200, "player join game "+infos.args.get(1));
+            }
+
+            case "leave": {
+                if (infos.args.size() != 1)
+                    throw new ErrorState(304, "bad party leave format.");
+                server.getCurrentGame(p).removePlayer(p);
+                throw new ErrorState(200, "leave game successful.");
+            }
+
+            case "invite": {
+                throw new ErrorState(402, "");
+            }
+
+            case "start": {
+                if (infos.args.size() != 1)
+                    throw new ErrorState(304, "bad party start format.");
+                Gameplate game = server.getCurrentGame(p);
+                if (game.isMasterPlayer(p) == false)
+                    throw new ErrorState(403, "fail to start game.");
+                game.startGame();
+                throw new ErrorState(200, "game started");
+            }
+
+            default:
+                throw new ErrorState(404, "bad party format.");
+        }
     }
 
     public void getMsg(Player p, ParseInfos infos) throws ErrorState {
@@ -152,21 +197,6 @@ class ServerAPI implements API {
         String s = String.join("&", infos.args);
         System.out.println(s);
         throw new ErrorState(200, "message received.");
-    }
-
-
-
-    private void drawCard(Player p) throws ErrorState { // it's a test function. do not use in the final result
-        Gameplate g = Master.getInstance().getCurrentGame(p);
-
-        throw new ErrorState(304, "do not use it.");
-        // Card c = g.getChanceDeck().drawCard();
-        // try {
-        //     c.doEffect(p);
-        // } catch (ErrorState e) {
-        //     g.getChanceDeck().addCard(c);
-        //     throw e;
-        // }
     }
 
 }

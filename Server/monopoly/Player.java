@@ -65,8 +65,6 @@ class User implements Player, Runnable {
             }
         } catch (IOException e) {
             System.out.println("unexpected error: "+e.getMessage());
-        } catch (ConnectionException e) {
-            System.out.println(e.message);
         }
         close();
     }
