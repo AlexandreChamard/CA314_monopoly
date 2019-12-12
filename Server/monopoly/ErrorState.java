@@ -8,7 +8,7 @@ package monopoly;
 103 - end of turn
 104 - player position (player id, position)
 105 - transfert money (player id, amount)
-106 - is bankrput (player id)
+106 - is bankrupt (player id)
 107 - is in prison (player id)
 108 - is out of prison (player id)
 109 - property new owner (player id, property id)
